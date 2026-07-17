@@ -347,14 +347,14 @@ textarea.finput {
 <div class="tp-overlay" id="tpOverlay">
   <div class="tp-panel">
     <div class="tp-handle"></div>
-    <div class="tp-title">🎙 Transcription</div>
+    <div class="tp-title">🎙 Dictation</div>
     <div id="geminiThinkingInline" class="gemini-thinking">
       <div class="thinking-dot"></div>
       <div class="thinking-dot"></div>
       <div class="thinking-dot"></div>
-      <span class="thinking-label" id="thinkingLabel">SENDING TO GEMINI...</span>
+      <span class="thinking-label" id="thinkingLabel">PROCESSING AUDIO...</span>
     </div>
-    <div class="tp-text" id="tpText">(no transcription)</div>
+    <div class="tp-text" id="tpText">(no text converted)</div>
     <div class="tp-actions">
       <button class="tp-btn-save" id="tpSaveBtn" onclick="saveTranscriptionAsNote()">Save as Note</button>
       <button class="tp-btn-discard" onclick="dismissTranscription()">Discard</button>
@@ -869,7 +869,7 @@ function renderNotes() {
           <audio id="player-${note.audioKey}" controls style="display:none"></audio>
           <div class="audio-btns">
             <button class="btn-main" style="padding:4px 8px;font-size:11px;width:auto;box-shadow:2px 2px 0 #000;" onclick="playAudio('${note.audioKey}')">▶ Play</button>
-            <button class="btn-main" style="padding:4px 8px;font-size:11px;width:auto;box-shadow:2px 2px 0 #000;background:var(--accent);" onclick="transcribeAudio('${note.audioKey}')">✦ Transcribe</button>
+            <button class="btn-main" style="padding:4px 8px;font-size:11px;width:auto;box-shadow:2px 2px 0 #000;background:var(--accent);" onclick="transcribeAudio('${note.audioKey}')">To Text</button>
           </div>
         </div>`;
     } 
@@ -917,7 +917,7 @@ async function transcribeAudio(audioKey) {
       req.onerror = reject;
     });
 
-    document.getElementById('thinkingLabel').textContent = 'SENDING TO GEMINI...';
+    document.getElementById('thinkingLabel').textContent = 'CONVERTING AUDIO...';
 
     const base64Audio = await new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -970,7 +970,7 @@ RULES:
   } catch (err) {
     console.error('Transcription error:', err);
     document.getElementById('geminiThinkingInline').classList.remove('visible');
-    document.getElementById('tpText').textContent = '❌ Error: ' + (err.message || 'Transcription failed');
+    document.getElementById('tpText').textContent = '❌ Error: ' + (err.message || 'Conversion failed');
     document.getElementById('tpText').style.display = 'block';
     document.getElementById('tpSaveBtn').style.display = 'none';
   }
@@ -984,7 +984,7 @@ async function saveTranscriptionAsNote() {
   const noteId = Date.now();
   const newNote = {
     id: noteId,
-    title: `🎙 TRANSCRIPTION — ${timeStr}`,
+    title: `🎙 DICTATION — ${timeStr}`,
     body: currentTranscription,
     isList: false,
     audioKey: null,
@@ -1002,7 +1002,7 @@ async function saveTranscriptionAsNote() {
     saveNotesState();
   }
   dismissTranscription();
-  showToast('Transcription saved ✓');
+  showToast('Dictation saved ✓');
 }
 
 function dismissTranscription() {
