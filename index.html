@@ -286,22 +286,26 @@ textarea.finput {
 }
 
 .theme-fab {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  width: 44px;
-  height: 44px;
+  position: relative;
+  margin: 32px auto 20px;
+  width: fit-content;
+  padding: 10px 16px;
+  height: auto;
   border: 3px solid #000;
   background: var(--surface);
   color: var(--text-hi);
-  font-size: 18px;
+  font-size: 11px;
+  font-weight: 700;
   cursor: pointer;
   z-index: 90;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   box-shadow: 3px 3px 0 #000;
   transition: transform 0.15s, box-shadow 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 .theme-fab:active {
   transform: translate(2px, 2px);
@@ -311,7 +315,7 @@ textarea.finput {
   border-radius: 0 !important;
 }
 [data-theme="stack"] .theme-fab {
-  border-radius: 50% !important;
+  border-radius: 30px !important;
   border-color: #333 !important;
   box-shadow: 3px 3px 0 #333 !important;
 }
@@ -410,8 +414,7 @@ textarea.finput {
   transition: box-shadow 0.1s ease, transform 0.1s ease;
   display: flex; align-items: center; justify-content: center;
 }
-:is([data-theme="stack"], [data-theme="geo"]) .btn-icon,
-:is([data-theme="stack"], [data-theme="geo"]) .theme-fab {
+:is([data-theme="stack"], [data-theme="geo"]) .btn-icon {
   width: 46px; height: 46px; border-radius: 50% !important;
 }
 :is([data-theme="stack"], [data-theme="geo"]) .tcard {
@@ -584,6 +587,7 @@ textarea.finput {
   </div>
 
   <div class="notes-grid" id="notes-container"></div>
+  <button class="theme-fab" onclick="openSheet('sh-theme');renderThemeGrid()" title="Theme Settings">◐ Theme Settings</button>
 </div>
 
 </div>
@@ -1469,6 +1473,5 @@ async function installPWA() {
   }
 }
 </script>
-<button class="theme-fab" onclick="openSheet('sh-theme');renderThemeGrid()" title="Theme Settings">◐</button>
 </body>
 </html>
