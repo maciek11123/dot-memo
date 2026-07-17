@@ -201,6 +201,85 @@ body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font
 :is([data-big="1"], [data-big="2"]) .audio-label { font-size: calc(10px * var(--fs-scale)) !important; }
 :is([data-big="1"], [data-big="2"]) .del-btn { font-size: calc(11px * var(--fs-scale)) !important; }
 :is([data-big="1"], [data-big="2"]) .audio-container button { font-size: calc(11px * var(--fs-scale)) !important; padding: calc(4px * var(--fs-scale)) calc(8px * var(--fs-scale)) !important; }
+/* Chunky borders and layout improvements */
+textarea.finput {
+  max-width: 100%;
+  resize: vertical;
+  min-height: 80px;
+}
+.notes-creator-title-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  align-items: stretch;
+}
+.notes-creator-title-row .finput {
+  margin-bottom: 0 !important;
+  flex: 1;
+  height: 46px;
+  padding: 10px 12px;
+}
+.notes-creator-title-row .btn-icon {
+  width: 46px;
+  height: 46px;
+  box-shadow: 3px 3px 0 #000;
+}
+.notes-creator .action-row {
+  margin: 14px 0 0 !important;
+  display: flex;
+  gap: 10px;
+}
+.action-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* Modal and panel styling overrides for pixel theme */
+[data-theme="pixel"] .sheet {
+  background: #fff !important;
+  border: 4px solid #000 !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+[data-theme="pixel"] .tp-panel {
+  background: #fff !important;
+  border: 4px solid #000 !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+[data-theme="pixel"] .tp-handle {
+  height: 6px;
+  background: #000;
+  border: 2px solid #000;
+  border-radius: 0;
+}
+[data-theme="pixel"] .tcard {
+  border: 3px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  background: #fff !important;
+}
+[data-theme="pixel"] .tcard.active {
+  outline: none !important;
+  border-color: var(--accent) !important;
+  box-shadow: 3px 3px 0 var(--accent) !important;
+}
+[data-theme="pixel"] .sub-swatch {
+  border: 2px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+}
+[data-theme="pixel"] .sub-swatch.active {
+  border-color: var(--text-hi) !important;
+  box-shadow: 3px 3px 0 #000 !important;
+}
+[data-theme="pixel"] .btn-icon {
+  border: 3px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+}
 </style>
 </head>
 <body>
@@ -213,8 +292,8 @@ body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font
   </div>
 
   <div class="notes-creator">
-    <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-      <input type="text" id="note-title" class="finput" style="margin-bottom: 0;" placeholder="TITLE..." autocomplete="off">
+    <div class="notes-creator-title-row">
+      <input type="text" id="note-title" class="finput" placeholder="TITLE..." autocomplete="off">
       <button class="btn-icon" id="mode-toggle-btn" onclick="toggleInputMode()" title="Toggle List Mode">☑️</button>
     </div>
     
@@ -225,7 +304,7 @@ body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font
       <button class="btn-sec" style="width: fit-content; padding: 6px 12px; font-size: 12px;" onclick="addListInputRow()">+ Add Item</button>
     </div>
 
-    <div class="action-row" style="margin-top: 10px;">
+    <div class="action-row">
       <button class="btn-main" id="save-note-btn" onclick="saveNote()">Save Note</button>
       <button class="btn-sec" id="cancel-edit-btn" onclick="cancelEdit()" style="display:none; background:var(--surface); color:#000;">Cancel</button>
       <button class="btn-sec" id="mic-btn" onclick="toggleRecording()">Rec Audio</button>
