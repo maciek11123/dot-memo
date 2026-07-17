@@ -1138,7 +1138,7 @@ function renderNotes() {
           <span class="audio-label">⚙ AUDIO_DUMP.WAV</span>
           <audio id="player-${note.audioKey}" controls style="display:none"></audio>
           <div class="audio-btns">
-            <button class="btn-main" style="padding:4px 8px;font-size:11px;width:auto;box-shadow:2px 2px 0 #000;" onclick="playAudio('${note.audioKey}')">▶ Play</button>
+            <button id="btn-audio-${note.audioKey}" class="btn-main" style="padding:4px 8px;font-size:11px;width:auto;box-shadow:2px 2px 0 #000;" onclick="toggleAudioPlayback('${note.audioKey}')">▶ Play</button>
             <button class="btn-main" style="padding:4px 8px;font-size:11px;width:auto;box-shadow:2px 2px 0 #000;background:var(--accent);" onclick="transcribeAudio('${note.audioKey}')">To Text</button>
           </div>
         </div>`;
@@ -1287,18 +1287,63 @@ document.getElementById('tpOverlay').addEventListener('click', e => {
   if (e.target === document.getElementById('tpOverlay')) dismissTranscription();
 });
 
-function playAudio(audioKey) {
-  const transaction = db.transaction(["audioBlobs"], "readonly");
-  const request = transaction.objectStore("audioBlobs").get(audioKey);
-  request.onsuccess = (e) => {
-    const blob = e.target.result;
-    if (blob) {
-      const audioUrl = URL.createObjectURL(blob);
-      const audioEl = document.getElementById(`player-${audioKey}`);
-      audioEl.src = audioUrl;
-      audioEl.play();
+function toggleAudioPlayback(audioKey) {
+  const audio = document.getElementById(`player-${audioKey}`);
+  const btn = document.getElementById(`btn-audio-${audioKey}`);
+  if (!audio || !btn) return;
+
+  // Stop any other currently playing audios on the page
+  document.querySelectorAll('audio').forEach(otherAudio => {
+    if (otherAudio !== audio && !otherAudio.paused) {
+      otherAudio.pause();
+      otherAudio.currentTime = 0;
+      const otherKey = otherAudio.id.replace('player-', '');
+      const otherBtn = document.getElementById(`btn-audio-${otherKey}`);
+      if (otherBtn) otherBtn.textContent = "▶ Play";
     }
-  };
+  });
+
+  // If audio is playing, pause it (triggers onpause event to set button to Stop)
+  if (!audio.paused) {
+    audio.pause();
+  }
+  // If audio is paused and button is Stop, stop/reset it completely
+  else if (btn.textContent.includes("Stop")) {
+    audio.currentTime = 0;
+    btn.textContent = "▶ Play";
+  }
+  // Otherwise (if stopped or paused in Play state), start playing
+  else {
+    if (!audio.src || audio.src === "") {
+      const transaction = db.transaction(["audioBlobs"], "readonly");
+      const request = transaction.objectStore("audioBlobs").get(audioKey);
+      request.onsuccess = (e) => {
+        const blob = e.target.result;
+        if (blob) {
+          audio.src = URL.createObjectURL(blob);
+          
+          audio.onplay = () => {
+            btn.textContent = "⏸ Pause";
+          };
+          audio.onpause = () => {
+            if (audio.currentTime === 0 || audio.ended) {
+              btn.textContent = "▶ Play";
+            } else {
+              btn.textContent = "⏹ Stop";
+            }
+          };
+          audio.onended = () => {
+            btn.textContent = "▶ Play";
+            audio.currentTime = 0;
+          };
+          
+          audio.play();
+        }
+      };
+    } else {
+      audio.play();
+    }
+  }
 }
 
 // ── INIT ──
