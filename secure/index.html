@@ -1273,7 +1273,8 @@ async function saveTranscriptionAsNote() {
     body: currentTranscription,
     isList: false,
     audioKey: null,
-    date: dateStr
+    date: dateStr,
+    userId: currentUser ? currentUser.uid : null
   };
   
   if (window._firestore) {
