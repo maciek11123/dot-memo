@@ -44,7 +44,7 @@
 
 html{background:var(--bg);transition:background .4s,color .4s;}
 body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:15px;min-height:100vh;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
-.app{max-width:420px;margin:0 auto;padding:0 0 65px;min-height:100vh;position:relative;}
+.app{max-width:420px;margin:0 auto;padding:0 0 20px;min-height:100vh;position:relative;}
 
 .nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);display:flex;justify-content:space-around;padding:5px 0 11px;z-index:50;transition:background .4s,box-shadow .4s;}
 .nbtn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:4px 12px;border-radius:10px;}
@@ -156,7 +156,8 @@ body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font
 .audio-container {margin-top: 8px; background: #f4f4f4; border: 2px dashed #000; padding: 6px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px;}
 .audio-label {font-size: 10px; font-weight: 700;}
 .audio-btns {display: flex; gap: 4px; flex-shrink: 0;}
-.del-btn {background: none; border: none; color: var(--low); font-family: 'Space Mono', monospace !important; font-weight: 700; font-size: 11px; cursor: pointer;}
+.del-btn {background: none; border: none; color: var(--low); font-family: 'Space Mono', monospace !important; font-weight: 500; font-size: 9px !important; opacity: 0.6; cursor: pointer; transition: opacity 0.2s;}
+.del-btn:hover {opacity: 1;}
 
 /* ── GEMINI THINKING ── */
 .gemini-thinking {display: none; align-items: center; gap: 10px; padding: 10px 0;}
@@ -199,7 +200,7 @@ body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font
 :is([data-big="1"], [data-big="2"]) .ctab { font-size: calc(12px * var(--fs-scale)) !important; padding: calc(11px * var(--fs-scale)) !important; }
 :is([data-big="1"], [data-big="2"]) .note-card { padding: calc(14px * var(--fs-scale)) !important; }
 :is([data-big="1"], [data-big="2"]) .audio-label { font-size: calc(10px * var(--fs-scale)) !important; }
-:is([data-big="1"], [data-big="2"]) .del-btn { font-size: calc(11px * var(--fs-scale)) !important; }
+:is([data-big="1"], [data-big="2"]) .del-btn { font-size: calc(9px * var(--fs-scale)) !important; }
 :is([data-big="1"], [data-big="2"]) .audio-container button { font-size: calc(11px * var(--fs-scale)) !important; padding: calc(4px * var(--fs-scale)) calc(8px * var(--fs-scale)) !important; }
 /* Chunky borders and layout improvements */
 textarea.finput {
@@ -289,6 +290,7 @@ textarea.finput {
 <div class="page active" id="pg-notes">
   <div class="header">
     <div class="logo">DotMemo</div>
+    <button class="btn-icon" id="theme-btn" onclick="openSheet('sh-theme');renderThemeGrid()" title="Theme Settings" style="width: 38px; height: 38px; font-size: 16px;">◐</button>
   </div>
 
   <div class="notes-creator">
@@ -312,13 +314,6 @@ textarea.finput {
   </div>
 
   <div class="notes-grid" id="notes-container"></div>
-</div>
-
-<!-- NAV WITH ONLY THEME -->
-<div class="nav nm-raised">
-  <button class="nbtn active" id="n-theme" onclick="openSheet('sh-theme');renderThemeGrid()">
-    <span class="nicon">◐</span><span class="nlabel">Theme</span>
-  </button>
 </div>
 
 </div>
