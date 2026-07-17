@@ -1457,6 +1457,19 @@ let _deferredPrompt = null;
 
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js', {scope: './'})
+    .then(reg => {
+      // If there's an update, listen for state change to reload page automatically
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'activated') {
+              window.location.reload();
+            }
+          });
+        }
+      });
+    })
     .catch(e => console.log('SW error', e));
 }
 
