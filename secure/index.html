@@ -131,14 +131,14 @@ body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font
 /* ══════════════════════════════════════
    NOTES SPECIFIC UI (Pixel Keep)
    ══════════════════════════════════════ */
-.notes-creator{border:4px solid #000;box-shadow:6px 6px 0 #000!important;border-radius:0;background:var(--surface)!important;padding:16px;margin:16px 14px 24px;}
+.notes-creator{border:3px solid #000;box-shadow:3px 3px 0 #000!important;border-radius:0;background:var(--surface)!important;padding:16px;margin:10px 14px;display:flex;flex-direction:column;height:calc(100dvh - 80px);box-sizing:border-box;}
 .notes-creator .finput {border-radius:0; border:2px solid #000;}
 .notes-creator .btn-main {border-radius:0; border:4px solid #000; box-shadow:4px 4px 0 #000;}
 .notes-creator .btn-sec {border-radius:0; border:4px solid #000; box-shadow:4px 4px 0 #000; background:var(--low); color:#fff;}
 .notes-creator .btn-sec.recording {background:var(--warn); animation: pulse 1s infinite alternate;}
 @keyframes pulse {from { opacity: 1; } to { opacity: 0.6; }}
 
-.list-builder {display: none; flex-direction: column; gap: 8px; margin-bottom: 10px;}
+.list-builder {display: none; flex-direction: column; gap: 8px; margin-bottom: 10px; flex:1; overflow-y:auto;}
 .list-builder.active {display: flex;}
 .list-input-row {display: flex; align-items: center; gap: 8px;}
 .list-input-row .finput {margin-bottom: 0; flex: 1;}
@@ -547,7 +547,7 @@ textarea.finput {
       <button class="btn-icon" id="mode-toggle-btn" onclick="toggleInputMode()" title="Toggle List Mode">☑️</button>
     </div>
     
-    <textarea id="note-body" class="finput" rows="12" style="height:30vh; min-height:120px; max-height:45vh;" placeholder="BRAIN DUMP..."></textarea>
+    <textarea id="note-body" class="finput" style="flex:1; min-height:120px; resize:none; margin-bottom:14px;" placeholder="BRAIN DUMP..."></textarea>
     
     <div id="list-builder" class="list-builder">
       <div id="list-items-container"></div>
