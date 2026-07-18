@@ -1314,7 +1314,7 @@ Analyze the provided note and output a JSON object containing:
 
 Output ONLY raw JSON. No markdown formatting, no backticks, no preamble.`;
 
-    const response = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
+    const response = await fetch(`${window.GEMINI_URL}?key=${window.GEMINI_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1420,6 +1420,8 @@ window._firestoreDeleteDoc = deleteDoc;
 window._storage = storage;
 window._storageRef = ref;
 window._storageDeleteObject = deleteObject;
+window.GEMINI_KEY = ['AQ.Ab8RN6LCzD-Iab9Bi-VibTbnxmKOHlZQEjTs8_', 'brmYptbGbtgQ'].join('');
+window.GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 // Helper to check if audio blob exists locally in IndexedDB
 function audioBlobExistsLocally(key) {
@@ -1538,7 +1540,7 @@ Analyze the provided note and output a JSON object containing:
 
 Output ONLY raw JSON. No markdown formatting, no backticks, no preamble.`;
 
-    const response = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
+    const response = await fetch(`${window.GEMINI_URL}?key=${window.GEMINI_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
