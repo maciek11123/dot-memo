@@ -27,11 +27,11 @@
   --low:#FF6B9D;--low-bg:rgba(250,88,167,.12);
 }
 [data-theme="pixel"] *{font-family:'Space Mono',monospace!important;}
-[data-theme="pixel"] .btn-main{background:var(--pix-accent,#2F35E1)!important;color:#fff;border:4px solid #000;box-shadow:4px 4px 0 #000;border-radius:0;}
-[data-theme="pixel"] .btn-sec{border:4px solid #000;box-shadow:4px 4px 0 #000;border-radius:0;}
+[data-theme="pixel"] .btn-main{background:var(--pix-accent,#2F35E1)!important;color:#fff;border:3px solid #000;box-shadow:3px 3px 0 #000;border-radius:0;}
+[data-theme="pixel"] .btn-sec{border:3px solid #000;box-shadow:3px 3px 0 #000;border-radius:0;}
 [data-theme="pixel"] .sheet{background:#fff!important;border-radius:0!important;}
 [data-theme="pixel"] .finput{border-radius:0;border:2px solid #000;}
-[data-theme="pixel"] .bconfirm{background:var(--pix-accent,#2F35E1)!important;border:4px solid #000;box-shadow:4px 4px 0 #000;border-radius:0;}
+[data-theme="pixel"] .bconfirm{background:var(--pix-accent,#2F35E1)!important;border:3px solid #000;box-shadow:3px 3px 0 #000;border-radius:0;}
 [data-theme="pixel"] .nav{background:var(--pix-nav,#ffffff)!important;border-top:4px solid #000;box-shadow:none;}
 
 :root,[data-theme]{
@@ -58,9 +58,9 @@ body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font
 .header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 0;}
 .logo{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.24em;color:var(--dim);text-transform:uppercase;}
 
-.btn-main{flex:1;border:none;border-radius:14px;padding:16px 20px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;letter-spacing:.02em;cursor:pointer;background:linear-gradient(145deg,var(--accent2),var(--accent));color:var(--on-accent);box-shadow:4px 5px 11px var(--sd),-2px -2px 5px var(--sl),0 5px 16px rgba(0,0,0,.18);transition:all .18s;}
+.btn-main{flex:1;border:none;border-radius:14px;padding:10px 14px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;letter-spacing:.02em;cursor:pointer;background:linear-gradient(145deg,var(--accent2),var(--accent));color:var(--on-accent);box-shadow:4px 5px 11px var(--sd),-2px -2px 5px var(--sl),0 5px 16px rgba(0,0,0,.18);transition:all .18s;}
 .btn-main:active{transform:translateY(1px);box-shadow:2px 3px 7px var(--sd),-1px -1px 3px var(--sl);}
-.btn-sec{border:none;border-radius:14px;padding:16px 18px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;transition:all .18s;}
+.btn-sec{border:none;border-radius:14px;padding:10px 12px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;transition:all .18s;}
 .btn-sec:active{transform:translateY(1px);}
 
 .page{display:none;}
@@ -581,6 +581,35 @@ textarea.finput {
   </div>
 </div>
 
+<!-- GEMINI OVERLAY -->
+<div class="tp-overlay" id="shGemini">
+  <div class="tp-panel" style="max-height: 85vh; overflow-y: auto;">
+    <div class="tp-handle"></div>
+    <div class="tp-title">🧠 Gemini Insights</div>
+    <div id="geminiThinking" class="gemini-thinking" style="display:none; align-items:center; gap:8px;">
+      <div class="thinking-dot"></div>
+      <div class="thinking-dot"></div>
+      <div class="thinking-dot"></div>
+      <span class="thinking-label">COGNITIVE PROCESSING...</span>
+    </div>
+    
+    <div id="geminiOutput" style="display:none; margin-bottom:14px;">
+      <div class="flabel" style="margin-top:10px;">Synthesis & Summary</div>
+      <div class="tp-text" id="geminiSynthesis" style="min-height: auto; max-height: none; white-space: pre-wrap; font-family:'Space Mono',monospace;"></div>
+      
+      <div class="flabel" style="margin-top:14px;">Brainstormed Ideas</div>
+      <div class="tp-text" id="geminiIdeas" style="min-height: auto; max-height: none; font-family:'Space Mono',monospace;"></div>
+      
+      <div class="flabel" style="margin-top:14px;">Actionable Tasks / Reminders</div>
+      <div class="tp-text" id="geminiReminders" style="min-height: auto; max-height: none; font-family:'Space Mono',monospace;"></div>
+    </div>
+    
+    <div class="tp-actions">
+      <button class="tp-btn-save" onclick="closeSheet('shGemini')">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- TRANSCRIPTION OVERLAY -->
 <div class="tp-overlay" id="tpOverlay">
   <div class="tp-panel">
@@ -919,7 +948,7 @@ async function toggleRecording() {
         stream.getTracks().forEach(t => t.stop());
         
         const noteId = Date.now();
-        const newNote = { id: noteId, title: document.getElementById("note-title").value.trim() || "AUDIO DUMP", body: "", isList: false, audioKey: audioId };
+        const newNote = { id: noteId, title: document.getElementById('note-title').value.trim() || 'AUDIO DUMP', body: '', isList: false, audioKey: audioId, userId: typeof currentUser !== 'undefined' && currentUser ? currentUser.uid : null, date: getLocalizedTimestamp() };
         
         // Save note to Firestore
         if (window._firestore) {
@@ -1035,7 +1064,7 @@ async function saveNote() {
     cancelEdit();
   } else {
     const noteId = Date.now();
-    const newNote = { id: noteId, title: title || "UNTITLED NOTE", body: noteItems, isList: isListMode, audioKey: null };
+    const newNote = { id: noteId, title: title || 'UNTITLED NOTE', body: noteItems, isList: isListMode, audioKey: null, userId: typeof currentUser !== 'undefined' && currentUser ? currentUser.uid : null, date: getLocalizedTimestamp() };
     
     if (window._firestore) {
       try {
@@ -1098,7 +1127,12 @@ function renderNotes() {
   notes.forEach(note => {
     const card = document.createElement("div");
     card.className = "note-card";
-    let contentHtml = `<div class="note-title">${note.title}</div>`;
+    
+    let contentHtml = `
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+        <div class="note-title" style="margin-bottom:0;">${note.title}</div>
+        <div style="font-family:'Space Mono',monospace; font-size:9px; color:var(--dim); font-weight:700; white-space:nowrap; margin-left:8px;">${note.date || ''}</div>
+      </div>`;
 
     if (note.audioKey) {
       contentHtml += `
@@ -1124,94 +1158,13 @@ function renderNotes() {
 
     contentHtml += `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 2px dashed #000; padding-top: 8px;">
-        <button class="del-btn" style="color:var(--text); float:none; margin:0;" onclick="editNote(${note.id})">[EDIT]</button>
-        <button class="del-btn" style="float:none; margin:0;" onclick="deleteNote(${note.id}, '${note.audioKey}')">[DELETE]</button>
+        <button class="del-btn" style="color:var(--accent); float:none; margin:0; text-transform:uppercase;" onclick="sendNoteToGemini(${note.id})">[GEMINI]</button>
+        <button class="del-btn" style="float:none; margin:0; text-transform:uppercase;" onclick="deleteNote(${note.id}, '${note.audioKey}')">[DELETE]</button>
       </div>`;
       
     card.innerHTML = contentHtml;
     container.appendChild(card);
   });
-}
-
-// ── GEMINI TRANSCRIPTION (Verbatim Extraction) ──
-const GEMINI_KEY = ['AQ.Ab8RN6LCzD-Iab9Bi-VibTbnxmKOHlZQEjTs8_', 'brmYptbGbtgQ'].join('');
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
-
-let currentTranscription = null;
-
-async function transcribeAudio(audioKey) {
-  document.getElementById('tpOverlay').classList.add('open');
-  document.getElementById('tpText').style.display = 'none';
-  document.getElementById('tpSaveBtn').style.display = 'none';
-  document.getElementById('geminiThinkingInline').classList.add('visible');
-  document.getElementById('thinkingLabel').textContent = 'LOADING AUDIO...';
-  currentTranscription = null;
-
-  try {
-    const blob = await new Promise((resolve, reject) => {
-      const tx = db.transaction(['audioBlobs'], 'readonly');
-      const req = tx.objectStore('audioBlobs').get(audioKey);
-      req.onsuccess = e => e.target.result ? resolve(e.target.result) : reject(new Error('Audio not found'));
-      req.onerror = reject;
-    });
-
-    document.getElementById('thinkingLabel').textContent = 'CONVERTING AUDIO...';
-
-    const base64Audio = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-
-    const mimeType = blob.type || 'audio/webm';
-    const geminiMime = mimeType.includes('mp4') ? 'audio/mp4'
-                     : mimeType.includes('ogg')  ? 'audio/ogg'
-                     : mimeType.includes('aac')  ? 'audio/aac'
-                     : 'audio/webm';
-
-    const systemPrompt = `You are a transcription assistant. Transcribe the audio verbatim — word for word.
-RULES:
-- NEVER invent or add words not clearly spoken.
-- Use [unclear] for inaudible parts.
-- If there is only silence or noise, return an empty string.
-- Return ONLY a JSON object, no preamble, no markdown, no backticks.
-
-{ "transcription": "verbatim text here" }`;
-
-    const response = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ parts: [
-          { inline_data: { mime_type: geminiMime, data: base64Audio } },
-          { text: 'Transcribe exactly what is spoken.' }
-        ]}],
-        generationConfig: { temperature: 0, maxOutputTokens: 800 }
-      })
-    });
-
-    if (!response.ok) throw new Error(`Gemini ${response.status}`);
-
-    const data = await response.json();
-    const rawText = data.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
-    const clean = rawText.replace(/```json/gi,'').replace(/```/g,'').trim();
-    const parsed = JSON.parse(clean);
-    currentTranscription = parsed.transcription || '';
-
-    document.getElementById('geminiThinkingInline').classList.remove('visible');
-    document.getElementById('tpText').textContent = currentTranscription || '(no speech detected)';
-    document.getElementById('tpText').style.display = 'block';
-    document.getElementById('tpSaveBtn').style.display = 'block';
-
-  } catch (err) {
-    console.error('Transcription error:', err);
-    document.getElementById('geminiThinkingInline').classList.remove('visible');
-    document.getElementById('tpText').textContent = '❌ Error: ' + (err.message || 'Conversion failed');
-    document.getElementById('tpText').style.display = 'block';
-    document.getElementById('tpSaveBtn').style.display = 'none';
-  }
 }
 
 async function saveTranscriptionAsNote() {
@@ -1220,14 +1173,7 @@ async function saveTranscriptionAsNote() {
   const timeStr = now.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
   const dateStr = now.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }).toUpperCase();
   const noteId = Date.now();
-  const newNote = {
-    id: noteId,
-    title: `🎙 DICTATION — ${timeStr}`,
-    body: currentTranscription,
-    isList: false,
-    audioKey: null,
-    date: dateStr
-  };
+  const newNote = { id: noteId, title: `🎙 DICTATION — ${timeStr}`, body: currentTranscription, isList: false, audioKey: null, date: getLocalizedTimestamp(), userId: typeof currentUser !== 'undefined' && currentUser ? currentUser.uid : null };
   
   if (window._firestore) {
     try {
@@ -1271,17 +1217,12 @@ function toggleAudioPlayback(audioKey) {
     }
   });
 
-  // If audio is playing, pause it (triggers onpause event to set button to Stop)
+  // Binary Toggle: Play or Stop
   if (!audio.paused) {
     audio.pause();
-  }
-  // If audio is paused and button is Stop, stop/reset it completely
-  else if (btn.textContent.includes("Stop")) {
     audio.currentTime = 0;
     btn.textContent = "▶ Play";
-  }
-  // Otherwise (if stopped or paused in Play state), start playing
-  else {
+  } else {
     if (!audio.src || audio.src === "") {
       const transaction = db.transaction(["audioBlobs"], "readonly");
       const request = transaction.objectStore("audioBlobs").get(audioKey);
@@ -1291,14 +1232,10 @@ function toggleAudioPlayback(audioKey) {
           audio.src = URL.createObjectURL(blob);
           
           audio.onplay = () => {
-            btn.textContent = "⏸ Pause";
+            btn.textContent = "⏹ Stop";
           };
           audio.onpause = () => {
-            if (audio.currentTime === 0 || audio.ended) {
-              btn.textContent = "▶ Play";
-            } else {
-              btn.textContent = "⏹ Stop";
-            }
+            btn.textContent = "▶ Play";
           };
           audio.onended = () => {
             btn.textContent = "▶ Play";
@@ -1321,6 +1258,137 @@ renderThemeGrid();
 if (isListMode) {
   addListInputRow();
 }
+
+function getLocalizedTimestamp() {
+  const now = new Date();
+  return now.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }).toUpperCase();
+}
+// ── GEMINI INSIGHTS & SYSTEM REMINDERS ──
+let reminders = [];
+try {
+  reminders = JSON.parse(localStorage.getItem('pixel-keep-reminders')) || [];
+} catch(e) {}
+
+function saveReminders() {
+  localStorage.setItem('pixel-keep-reminders', JSON.stringify(reminders));
+}
+
+// Background scheduler checker running every 10 seconds
+setInterval(() => {
+  const now = Date.now();
+  let changed = false;
+  reminders.forEach(rem => {
+    if (!rem.triggered && rem.time && new Date(rem.time).getTime() <= now) {
+      rem.triggered = true;
+      changed = true;
+      if (window.Notification && Notification.permission === "granted") {
+        new Notification("DotMemo Reminder", { body: rem.text });
+      }
+      showToast(`🔔 REMINDER: ${rem.text}`);
+    }
+  });
+  if (changed) saveReminders();
+}, 10000);
+
+async function sendNoteToGemini(noteId) {
+  const note = notes.find(n => n.id === noteId);
+  if (!note) return;
+
+  openSheet('shGemini');
+  document.getElementById('geminiThinking').style.display = 'flex';
+  document.getElementById('geminiOutput').style.display = 'none';
+
+  try {
+    const noteText = `Title: ${note.title}\nContent: ${note.isList ? note.body.map(i => `- [${i.checked ? 'x' : ' '}] ${i.text}`).join('\n') : note.body}`;
+    const systemPrompt = `You are a cognitive note assistant.
+Analyze the provided note and output a JSON object containing:
+1. "synthesis": A concise synthesis and compilation of the note.
+2. "ideas": A list of 2-3 brainstormed ideas or related suggestions based on the note.
+3. "reminders": A list of actionable tasks or scheduled commitments mentioned or implied in the note. Each reminder must be an object with "text" (what to do) and "time" (an ISO 8601 timestamp string representing the scheduled time if a date/time is mentioned or implied, otherwise default to a date in the future or null if no timeframe is implied).
+
+Output ONLY raw JSON. No markdown formatting, no backticks, no preamble.`;
+
+    const response = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ parts: [{ text: noteText }] }],
+        generationConfig: { temperature: 0.2, maxOutputTokens: 800 }
+      })
+    });
+
+    if (!response.ok) throw new Error(`Gemini status ${response.status}`);
+    const data = await response.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
+    const clean = rawText.replace(/```json/gi,'').replace(/```/g,'').trim();
+    const parsed = JSON.parse(clean);
+
+    document.getElementById('geminiSynthesis').textContent = parsed.synthesis || 'No synthesis generated.';
+    
+    const ideasEl = document.getElementById('geminiIdeas');
+    ideasEl.innerHTML = '';
+    if (parsed.ideas && parsed.ideas.length > 0) {
+      const ul = document.createElement('ul');
+      ul.style.paddingLeft = '20px';
+      parsed.ideas.forEach(idea => {
+        const li = document.createElement('li');
+        li.textContent = idea;
+        ul.appendChild(li);
+      });
+      ideasEl.appendChild(ul);
+    } else {
+      ideasEl.textContent = 'No ideas generated.';
+    }
+
+    const remindersEl = document.getElementById('geminiReminders');
+    remindersEl.innerHTML = '';
+    if (parsed.reminders && parsed.reminders.length > 0) {
+      const div = document.createElement('div');
+      parsed.reminders.forEach(rem => {
+        const item = document.createElement('div');
+        item.style.marginBottom = '6px';
+        const dateFormatted = rem.time ? new Date(rem.time).toLocaleString() : 'No set time';
+        item.textContent = `• ${rem.text} (${dateFormatted})`;
+        div.appendChild(item);
+
+        reminders.push({
+          id: Date.now() + Math.random(),
+          text: rem.text,
+          time: rem.time || new Date(Date.now() + 3600000).toISOString(),
+          triggered: false,
+          noteId: noteId
+        });
+      });
+      remindersEl.appendChild(div);
+      saveReminders();
+      
+      if (window.Notification && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+    } else {
+      remindersEl.textContent = 'No reminders detected.';
+    }
+
+    document.getElementById('geminiThinking').style.display = 'none';
+    document.getElementById('geminiOutput').style.display = 'block';
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('geminiThinking').style.display = 'none';
+    document.getElementById('geminiOutput').style.display = 'block';
+    document.getElementById('geminiSynthesis').textContent = '❌ Error processing: ' + e.message;
+    document.getElementById('geminiIdeas').textContent = '—';
+    document.getElementById('geminiReminders').textContent = '—';
+  }
+}
+
 </script>
 
 <!-- Firebase SDK Module -->
@@ -1414,6 +1482,137 @@ onSnapshot(notesQ, async (snap) => {
 }, err => {
   console.error("Notes snapshot listener error:", err);
 });
+
+function getLocalizedTimestamp() {
+  const now = new Date();
+  return now.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }).toUpperCase();
+}
+// ── GEMINI INSIGHTS & SYSTEM REMINDERS ──
+let reminders = [];
+try {
+  reminders = JSON.parse(localStorage.getItem('pixel-keep-reminders')) || [];
+} catch(e) {}
+
+function saveReminders() {
+  localStorage.setItem('pixel-keep-reminders', JSON.stringify(reminders));
+}
+
+// Background scheduler checker running every 10 seconds
+setInterval(() => {
+  const now = Date.now();
+  let changed = false;
+  reminders.forEach(rem => {
+    if (!rem.triggered && rem.time && new Date(rem.time).getTime() <= now) {
+      rem.triggered = true;
+      changed = true;
+      if (window.Notification && Notification.permission === "granted") {
+        new Notification("DotMemo Reminder", { body: rem.text });
+      }
+      showToast(`🔔 REMINDER: ${rem.text}`);
+    }
+  });
+  if (changed) saveReminders();
+}, 10000);
+
+async function sendNoteToGemini(noteId) {
+  const note = notes.find(n => n.id === noteId);
+  if (!note) return;
+
+  openSheet('shGemini');
+  document.getElementById('geminiThinking').style.display = 'flex';
+  document.getElementById('geminiOutput').style.display = 'none';
+
+  try {
+    const noteText = `Title: ${note.title}\nContent: ${note.isList ? note.body.map(i => `- [${i.checked ? 'x' : ' '}] ${i.text}`).join('\n') : note.body}`;
+    const systemPrompt = `You are a cognitive note assistant.
+Analyze the provided note and output a JSON object containing:
+1. "synthesis": A concise synthesis and compilation of the note.
+2. "ideas": A list of 2-3 brainstormed ideas or related suggestions based on the note.
+3. "reminders": A list of actionable tasks or scheduled commitments mentioned or implied in the note. Each reminder must be an object with "text" (what to do) and "time" (an ISO 8601 timestamp string representing the scheduled time if a date/time is mentioned or implied, otherwise default to a date in the future or null if no timeframe is implied).
+
+Output ONLY raw JSON. No markdown formatting, no backticks, no preamble.`;
+
+    const response = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ parts: [{ text: noteText }] }],
+        generationConfig: { temperature: 0.2, maxOutputTokens: 800 }
+      })
+    });
+
+    if (!response.ok) throw new Error(`Gemini status ${response.status}`);
+    const data = await response.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
+    const clean = rawText.replace(/```json/gi,'').replace(/```/g,'').trim();
+    const parsed = JSON.parse(clean);
+
+    document.getElementById('geminiSynthesis').textContent = parsed.synthesis || 'No synthesis generated.';
+    
+    const ideasEl = document.getElementById('geminiIdeas');
+    ideasEl.innerHTML = '';
+    if (parsed.ideas && parsed.ideas.length > 0) {
+      const ul = document.createElement('ul');
+      ul.style.paddingLeft = '20px';
+      parsed.ideas.forEach(idea => {
+        const li = document.createElement('li');
+        li.textContent = idea;
+        ul.appendChild(li);
+      });
+      ideasEl.appendChild(ul);
+    } else {
+      ideasEl.textContent = 'No ideas generated.';
+    }
+
+    const remindersEl = document.getElementById('geminiReminders');
+    remindersEl.innerHTML = '';
+    if (parsed.reminders && parsed.reminders.length > 0) {
+      const div = document.createElement('div');
+      parsed.reminders.forEach(rem => {
+        const item = document.createElement('div');
+        item.style.marginBottom = '6px';
+        const dateFormatted = rem.time ? new Date(rem.time).toLocaleString() : 'No set time';
+        item.textContent = `• ${rem.text} (${dateFormatted})`;
+        div.appendChild(item);
+
+        reminders.push({
+          id: Date.now() + Math.random(),
+          text: rem.text,
+          time: rem.time || new Date(Date.now() + 3600000).toISOString(),
+          triggered: false,
+          noteId: noteId
+        });
+      });
+      remindersEl.appendChild(div);
+      saveReminders();
+      
+      if (window.Notification && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+    } else {
+      remindersEl.textContent = 'No reminders detected.';
+    }
+
+    document.getElementById('geminiThinking').style.display = 'none';
+    document.getElementById('geminiOutput').style.display = 'block';
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('geminiThinking').style.display = 'none';
+    document.getElementById('geminiOutput').style.display = 'block';
+    document.getElementById('geminiSynthesis').textContent = '❌ Error processing: ' + e.message;
+    document.getElementById('geminiIdeas').textContent = '—';
+    document.getElementById('geminiReminders').textContent = '—';
+  }
+}
+
 </script>
 
 <script>
