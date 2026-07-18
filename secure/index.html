@@ -547,7 +547,7 @@ textarea.finput {
       <button class="btn-icon" id="mode-toggle-btn" onclick="toggleInputMode()" title="Toggle List Mode">☑️</button>
     </div>
     
-    <textarea id="note-body" class="finput" rows="3" placeholder="BRAIN DUMP..."></textarea>
+    <textarea id="note-body" class="finput" rows="12" style="min-height:350px;" placeholder="BRAIN DUMP..."></textarea>
     
     <div id="list-builder" class="list-builder">
       <div id="list-items-container"></div>
@@ -1179,7 +1179,7 @@ function renderNotes() {
     let contentHtml = `
       <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
         <div class="note-title" style="margin-bottom:0;">${note.title}</div>
-        <div style="font-family:'Space Mono',monospace; font-size:9px; color:var(--dim); font-weight:700; white-space:nowrap; margin-left:8px;">${note.date || ''}</div>
+        <div style="font-family:'Space Mono',monospace; font-size:9px; color:var(--dim); font-weight:700; white-space:nowrap; margin-left:8px;">${getNoteDateString(note)}</div>
       </div>`;
 
     if (note.audioKey) {
@@ -1305,6 +1305,21 @@ applyBigMode(bigMode);
 renderThemeGrid();
 if (isListMode) {
   addListInputRow();
+}
+
+function getNoteDateString(note) {
+  if (note.date) return note.date;
+  if (note.id && typeof note.id === 'number' && note.id > 1000000000000) {
+    const now = new Date(note.id);
+    return now.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).toUpperCase();
+  }
+  return '';
 }
 
 function getLocalizedTimestamp() {
@@ -1585,6 +1600,21 @@ onAuthStateChanged(auth, (user) => {
     showPage('pg-login');
   }
 });
+
+function getNoteDateString(note) {
+  if (note.date) return note.date;
+  if (note.id && typeof note.id === 'number' && note.id > 1000000000000) {
+    const now = new Date(note.id);
+    return now.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).toUpperCase();
+  }
+  return '';
+}
 
 function getLocalizedTimestamp() {
   const now = new Date();
