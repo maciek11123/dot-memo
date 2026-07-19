@@ -1268,6 +1268,8 @@ async function saveNote() {
         } catch(e) {
           console.error(e);
         }
+      } else {
+        saveNotesState();
       }
     }
     cancelEdit();
@@ -1281,6 +1283,9 @@ async function saveNote() {
       } catch(e) {
         console.error(e);
       }
+    } else {
+      notes.unshift(newNote);
+      saveNotesState();
     }
     
     document.getElementById("note-title").value = "";
@@ -1300,6 +1305,8 @@ async function toggleCheck(noteId, itemIndex) {
       } catch(e) {
         console.error(e);
       }
+    } else {
+      saveNotesState();
     }
   }
 }
